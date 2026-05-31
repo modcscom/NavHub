@@ -7,6 +7,31 @@
     <link rel="stylesheet" href="admin-styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 登录验证 - 在页面渲染前执行
+        (function() {
+            const SESSION_KEY = 'navhub_admin_session';
+            const session = localStorage.getItem(SESSION_KEY);
+            
+            if (!session) {
+                window.location.replace('login.html');
+                return;
+            }
+            
+            try {
+                const sessionData = JSON.parse(session);
+                if (sessionData.expires < Date.now()) {
+                    localStorage.removeItem(SESSION_KEY);
+                    window.location.replace('login.html');
+                    return;
+                }
+            } catch (e) {
+                localStorage.removeItem(SESSION_KEY);
+                window.location.replace('login.html');
+                return;
+            }
+        })();
+    </script>
 </head>
 <body>
     <div class="admin-container">
@@ -25,15 +50,15 @@
             <nav class="sidebar-nav">
                 <div class="nav-section">
                     <span class="nav-label">主菜单</span>
-                    <a href="#dashboard" class="nav-item active">
+                    <a href="#dashboard" class="nav-item active" data-page="dashboard">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>仪表盘</span>
                     </a>
-                    <a href="#websites" class="nav-item">
+                    <a href="#websites" class="nav-item" data-page="websites">
                         <i class="fas fa-globe"></i>
                         <span>网站管理</span>
                     </a>
-                    <a href="#categories" class="nav-item">
+                    <a href="#categories" class="nav-item" data-page="categories">
                         <i class="fas fa-folder"></i>
                         <span>分类管理</span>
                     </a>
@@ -41,18 +66,18 @@
                 
                 <div class="nav-section">
                     <span class="nav-label">设置</span>
-                    <a href="#settings" class="nav-item">
+                    <a href="#settings" class="nav-item" data-page="settings">
                         <i class="fas fa-cog"></i>
                         <span>系统设置</span>
-                    </a>
-                    <a href="#appearance" class="nav-item">
-                        <i class="fas fa-palette"></i>
-                        <span>外观设置</span>
                     </a>
                 </div>
             </nav>
             
             <div class="sidebar-footer">
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>退出登录</span>
+                </button>
                 <a href="index.html" class="back-to-site">
                     <i class="fas fa-arrow-left"></i>
                     <span>返回网站</span>
@@ -66,21 +91,16 @@
             <header class="top-bar">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="搜索...">
+                    <input type="text" id="globalSearch" placeholder="搜索网站、分类...">
                 </div>
                 
                 <div class="top-bar-actions">
-                    <button class="action-btn">
-                        <i class="fas fa-bell"></i>
-                        <span class="badge">3</span>
-                    </button>
-                    <button class="action-btn">
-                        <i class="fas fa-envelope"></i>
+                    <button class="action-btn" id="refreshBtn" title="刷新数据">
+                        <i class="fas fa-sync-alt"></i>
                     </button>
                     <div class="user-menu">
                         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin" alt="Admin" class="user-avatar">
                         <span class="user-name">管理员</span>
-                        <i class="fas fa-chevron-down"></i>
                     </div>
                 </div>
             </header>
@@ -88,7 +108,7 @@
             <!-- 页面内容 -->
             <div class="page-content">
                 <!-- 仪表盘 -->
-                <section class="dashboard-section" id="dashboard">
+                <section class="page-section active" id="dashboard">
                     <div class="page-header">
                         <h1>仪表盘</h1>
                         <p>欢迎回来，查看今日数据概览</p>
@@ -101,26 +121,8 @@
                                 <i class="fas fa-globe"></i>
                             </div>
                             <div class="stat-info">
-                                <span class="stat-value">142</span>
+                                <span class="stat-value" id="statWebsites">0</span>
                                 <span class="stat-label">网站总数</span>
-                            </div>
-                            <div class="stat-trend up">
-                                <i class="fas fa-arrow-up"></i>
-                                <span>+12%</span>
-                            </div>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <div class="stat-icon green">
-                                <i class="fas fa-eye"></i>
-                            </div>
-                            <div class="stat-info">
-                                <span class="stat-value">8,542</span>
-                                <span class="stat-label">今日访问</span>
-                            </div>
-                            <div class="stat-trend up">
-                                <i class="fas fa-arrow-up"></i>
-                                <span>+23%</span>
                             </div>
                         </div>
                         
@@ -129,26 +131,28 @@
                                 <i class="fas fa-folder"></i>
                             </div>
                             <div class="stat-info">
-                                <span class="stat-value">18</span>
+                                <span class="stat-value" id="statCategories">0</span>
                                 <span class="stat-label">分类数量</span>
                             </div>
-                            <div class="stat-trend neutral">
-                                <i class="fas fa-minus"></i>
-                                <span>0%</span>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon green">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="statViews">0</span>
+                                <span class="stat-label">今日访问</span>
                             </div>
                         </div>
                         
                         <div class="stat-card">
                             <div class="stat-icon orange">
-                                <i class="fas fa-users"></i>
+                                <i class="fas fa-clock"></i>
                             </div>
                             <div class="stat-info">
-                                <span class="stat-value">1,234</span>
-                                <span class="stat-label">用户数量</span>
-                            </div>
-                            <div class="stat-trend up">
-                                <i class="fas fa-arrow-up"></i>
-                                <span>+8%</span>
+                                <span class="stat-value" id="statLastUpdate">--</span>
+                                <span class="stat-label">最后更新</span>
                             </div>
                         </div>
                     </div>
@@ -157,21 +161,21 @@
                     <div class="quick-actions">
                         <h3>快捷操作</h3>
                         <div class="action-buttons">
-                            <button class="action-card" onclick="showAddModal()">
+                            <button class="action-card" onclick="showAddWebsiteModal()">
                                 <i class="fas fa-plus"></i>
                                 <span>添加网站</span>
                             </button>
-                            <button class="action-card">
+                            <button class="action-card" onclick="showAddCategoryModal()">
                                 <i class="fas fa-folder-plus"></i>
                                 <span>新建分类</span>
                             </button>
-                            <button class="action-card">
-                                <i class="fas fa-file-import"></i>
-                                <span>批量导入</span>
+                            <button class="action-card" onclick="switchPage('websites')">
+                                <i class="fas fa-list"></i>
+                                <span>管理网站</span>
                             </button>
-                            <button class="action-card">
-                                <i class="fas fa-chart-bar"></i>
-                                <span>查看报表</span>
+                            <button class="action-card" onclick="switchPage('categories')">
+                                <i class="fas fa-tags"></i>
+                                <span>管理分类</span>
                             </button>
                         </div>
                     </div>
@@ -180,7 +184,7 @@
                     <div class="recent-section">
                         <div class="section-header">
                             <h3>最近添加</h3>
-                            <a href="#" class="view-all">查看全部</a>
+                            <a href="#" class="view-all" onclick="switchPage('websites'); return false;">查看全部</a>
                         </div>
                         <div class="data-table-wrapper">
                             <table class="data-table">
@@ -189,75 +193,13 @@
                                         <th>网站</th>
                                         <th>分类</th>
                                         <th>添加时间</th>
-                                        <th>状态</th>
                                         <th>操作</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="recentWebsitesTable">
                                     <tr>
-                                        <td>
-                                            <div class="website-info">
-                                                <div class="website-icon">
-                                                    <i class="fab fa-react"></i>
-                                                </div>
-                                                <div class="website-details">
-                                                    <span class="website-name">React</span>
-                                                    <span class="website-url">react.dev</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><span class="badge-tag">前端框架</span></td>
-                                        <td>2026-05-31</td>
-                                        <td><span class="status-badge active">已发布</span></td>
-                                        <td>
-                                            <div class="table-actions">
-                                                <button class="icon-btn"><i class="fas fa-edit"></i></button>
-                                                <button class="icon-btn"><i class="fas fa-trash"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="website-info">
-                                                <div class="website-icon">
-                                                    <i class="fab fa-vuejs"></i>
-                                                </div>
-                                                <div class="website-details">
-                                                    <span class="website-name">Vue.js</span>
-                                                    <span class="website-url">vuejs.org</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><span class="badge-tag">前端框架</span></td>
-                                        <td>2026-05-30</td>
-                                        <td><span class="status-badge active">已发布</span></td>
-                                        <td>
-                                            <div class="table-actions">
-                                                <button class="icon-btn"><i class="fas fa-edit"></i></button>
-                                                <button class="icon-btn"><i class="fas fa-trash"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="website-info">
-                                                <div class="website-icon">
-                                                    <i class="fab fa-angular"></i>
-                                                </div>
-                                                <div class="website-details">
-                                                    <span class="website-name">Angular</span>
-                                                    <span class="website-url">angular.io</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><span class="badge-tag">前端框架</span></td>
-                                        <td>2026-05-29</td>
-                                        <td><span class="status-badge pending">待审核</span></td>
-                                        <td>
-                                            <div class="table-actions">
-                                                <button class="icon-btn"><i class="fas fa-edit"></i></button>
-                                                <button class="icon-btn"><i class="fas fa-trash"></i></button>
-                                            </div>
+                                        <td colspan="4" class="empty-state">
+                                            <i class="fas fa-spinner fa-spin"></i> 加载中...
                                         </td>
                                     </tr>
                                 </tbody>
@@ -265,101 +207,287 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- 网站管理 -->
+                <section class="page-section" id="websites">
+                    <div class="page-header">
+                        <div>
+                            <h1>网站管理</h1>
+                            <p>管理所有导航网站</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="showAddWebsiteModal()">
+                            <i class="fas fa-plus"></i>
+                            添加网站
+                        </button>
+                    </div>
+                    
+                    <!-- 搜索和筛选 -->
+                    <div class="filter-bar">
+                        <div class="search-input-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="websiteSearch" placeholder="搜索网站...">
+                        </div>
+                        <select id="categoryFilter">
+                            <option value="">全部分类</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 网站列表 -->
+                    <div class="data-table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th width="50">ID</th>
+                                    <th>网站信息</th>
+                                    <th>分类</th>
+                                    <th>链接</th>
+                                    <th>添加时间</th>
+                                    <th width="120">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="websitesTable">
+                                <tr>
+                                    <td colspan="6" class="empty-state">
+                                        <i class="fas fa-spinner fa-spin"></i> 加载中...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- 分页 -->
+                    <div class="pagination" id="websitesPagination">
+                        <!-- 动态生成分页 -->
+                    </div>
+                </section>
+
+                <!-- 分类管理 -->
+                <section class="page-section" id="categories">
+                    <div class="page-header">
+                        <div>
+                            <h1>分类管理</h1>
+                            <p>管理网站分类</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="showAddCategoryModal()">
+                            <i class="fas fa-plus"></i>
+                            添加分类
+                        </button>
+                    </div>
+                    
+                    <!-- 分类网格 -->
+                    <div class="categories-grid" id="categoriesGrid">
+                        <div class="loading-state">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>加载中...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 系统设置 -->
+                <section class="page-section" id="settings">
+                    <div class="page-header">
+                        <h1>系统设置</h1>
+                        <p>配置系统参数</p>
+                    </div>
+                    
+                    <div class="settings-form">
+                        <div class="form-section">
+                            <h3>基本设置</h3>
+                            <div class="form-group">
+                                <label>网站名称</label>
+                                <input type="text" id="siteName" value="NavHub">
+                            </div>
+                            <div class="form-group">
+                                <label>网站描述</label>
+                                <textarea id="siteDescription" rows="3">现代化网站导航平台</textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h3>安全设置</h3>
+                            <div class="form-group">
+                                <label>管理密码</label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" id="adminPassword" placeholder="输入新密码">
+                                    <button type="button" class="toggle-password" onclick="togglePassword(this)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <span class="form-hint">留空表示不修改密码</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" onclick="resetSettings()">重置</button>
+                            <button class="btn btn-primary" onclick="saveSettings()">保存设置</button>
+                        </div>
+                    </div>
+                </section>
             </div>
         </main>
     </div>
 
-    <!-- 添加网站模态框 -->
-    <div class="modal" id="addModal">
-        <div class="modal-overlay" onclick="closeAddModal()"></div>
+    <!-- 添加/编辑网站模态框 -->
+    <div class="modal" id="websiteModal">
+        <div class="modal-overlay" onclick="closeWebsiteModal()"></div>
         <div class="modal-content">
             <div class="modal-header">
-                <h3>添加新网站</h3>
-                <button class="modal-close" onclick="closeAddModal()">
+                <h3 id="websiteModalTitle">添加网站</h3>
+                <button class="modal-close" onclick="closeWebsiteModal()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <form class="form">
+                <form class="form" id="websiteForm">
+                    <input type="hidden" id="websiteId">
                     <div class="form-group">
-                        <label>网站名称</label>
-                        <input type="text" placeholder="输入网站名称">
+                        <label>网站名称 <span class="required">*</span></label>
+                        <input type="text" id="websiteName" placeholder="输入网站名称" required>
                     </div>
                     <div class="form-group">
-                        <label>网站链接</label>
-                        <input type="url" placeholder="https://example.com">
+                        <label>网站链接 <span class="required">*</span></label>
+                        <input type="url" id="websiteUrl" placeholder="https://example.com" required>
                     </div>
                     <div class="form-group">
-                        <label>选择分类</label>
-                        <select>
-                            <option>前端框架</option>
-                            <option>开发工具</option>
-                            <option>设计资源</option>
-                            <option>学习平台</option>
-                            <option>云服务</option>
+                        <label>选择分类 <span class="required">*</span></label>
+                        <select id="websiteCategory" required>
+                            <option value="">请选择分类</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>描述</label>
-                        <textarea rows="3" placeholder="简短描述这个网站..."></textarea>
+                        <textarea id="websiteDescription" rows="3" placeholder="简短描述这个网站..."></textarea>
                     </div>
                     <div class="form-group">
                         <label>图标</label>
-                        <div class="icon-selector">
-                            <button type="button" class="icon-option active">
+                        <div class="icon-selector" id="iconSelector">
+                            <button type="button" class="icon-option active" data-icon="fas fa-globe">
                                 <i class="fas fa-globe"></i>
                             </button>
-                            <button type="button" class="icon-option">
+                            <button type="button" class="icon-option" data-icon="fas fa-code">
                                 <i class="fas fa-code"></i>
                             </button>
-                            <button type="button" class="icon-option">
+                            <button type="button" class="icon-option" data-icon="fas fa-paint-brush">
                                 <i class="fas fa-paint-brush"></i>
                             </button>
-                            <button type="button" class="icon-option">
+                            <button type="button" class="icon-option" data-icon="fas fa-graduation-cap">
                                 <i class="fas fa-graduation-cap"></i>
                             </button>
-                            <button type="button" class="icon-option">
+                            <button type="button" class="icon-option" data-icon="fas fa-cloud">
                                 <i class="fas fa-cloud"></i>
+                            </button>
+                            <button type="button" class="icon-option" data-icon="fas fa-laptop-code">
+                                <i class="fas fa-laptop-code"></i>
+                            </button>
+                            <button type="button" class="icon-option" data-icon="fas fa-tools">
+                                <i class="fas fa-tools"></i>
+                            </button>
+                            <button type="button" class="icon-option" data-icon="fas fa-book">
+                                <i class="fas fa-book"></i>
                             </button>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeAddModal()">取消</button>
-                <button class="btn btn-primary">添加网站</button>
+                <button class="btn btn-secondary" onclick="closeWebsiteModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveWebsite()">保存</button>
             </div>
         </div>
     </div>
 
-    <script>
-        // 侧边栏切换
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebar = document.querySelector('.sidebar');
-        
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-            const icon = sidebarToggle.querySelector('i');
-            icon.classList.toggle('fa-chevron-left');
-            icon.classList.toggle('fa-chevron-right');
-        });
+    <!-- 添加/编辑分类模态框 -->
+    <div class="modal" id="categoryModal">
+        <div class="modal-overlay" onclick="closeCategoryModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="categoryModalTitle">添加分类</h3>
+                <button class="modal-close" onclick="closeCategoryModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form" id="categoryForm">
+                    <input type="hidden" id="categoryId">
+                    <div class="form-group">
+                        <label>分类名称 <span class="required">*</span></label>
+                        <input type="text" id="categoryName" placeholder="输入分类名称" required>
+                    </div>
+                    <div class="form-group">
+                        <label>图标</label>
+                        <div class="icon-selector" id="categoryIconSelector">
+                            <button type="button" class="icon-option active" data-icon="fas fa-folder">
+                                <i class="fas fa-folder"></i>
+                            </button>
+                            <button type="button" class="icon-option" data-icon="fas fa-code">
+                                <i class="fas fa-code"></i>
+                            </button>
+                            <button type="button" class="icon-option" data-icon="fas fa-paint-brush">
+                                <i class="fas fa-paint-brush"></i>
+                            </button>
+                            <button type="button" class="icon-option" data-icon="fas fa-graduation-cap">
+                                <i class="fas fa-graduation-cap"></i>
+                            </button>
+                            <button type="button" class="icon-option" data-icon="fas fa-cloud">
+                                <i class="fas fa-cloud"></i>
+                            </button>
+                            <button type="button" class="icon-option" data-icon="fas fa-laptop-code">
+                                <i class="fas fa-laptop-code"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>颜色</label>
+                        <div class="color-selector" id="colorSelector">
+                            <button type="button" class="color-option active" data-color="#3b82f6" style="background: #3b82f6;"></button>
+                            <button type="button" class="color-option" data-color="#ec4899" style="background: #ec4899;"></button>
+                            <button type="button" class="color-option" data-color="#10b981" style="background: #10b981;"></button>
+                            <button type="button" class="color-option" data-color="#8b5cf6" style="background: #8b5cf6;"></button>
+                            <button type="button" class="color-option" data-color="#f59e0b" style="background: #f59e0b;"></button>
+                            <button type="button" class="color-option" data-color="#ef4444" style="background: #ef4444;"></button>
+                            <button type="button" class="color-option" data-color="#06b6d4" style="background: #06b6d4;"></button>
+                            <button type="button" class="color-option" data-color="#84cc16" style="background: #84cc16;"></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCategoryModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveCategory()">保存</button>
+            </div>
+        </div>
+    </div>
 
-        // 模态框控制
-        function showAddModal() {
-            document.getElementById('addModal').classList.add('active');
-        }
+    <!-- 删除确认模态框 -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-overlay" onclick="closeDeleteModal()"></div>
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3>确认删除</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-confirm">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>确定要删除 <strong id="deleteItemName"></strong> 吗？</p>
+                    <span class="delete-warning">此操作不可撤销</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">取消</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">删除</button>
+            </div>
+        </div>
+    </div>
 
-        function closeAddModal() {
-            document.getElementById('addModal').classList.remove('active');
-        }
+    <!-- Toast 提示 -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">操作成功</span>
+    </div>
 
-        // 图标选择
-        document.querySelectorAll('.icon-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.icon-option').forEach(o => o.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-    </script>
+    <script src="admin.js"></script>
 </body>
 </html>
