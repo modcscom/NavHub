@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网站导航 - Website Navigation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 背景动画 -->
+    <div class="bg-animation">
+        <div class="gradient-sphere sphere-1"></div>
+        <div class="gradient-sphere sphere-2"></div>
+        <div class="gradient-sphere sphere-3"></div>
+    </div>
+
+    <!-- 头部 -->
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-compass"></i>
+            <span>NavHub</span>
+        </div>
+        <nav class="nav-menu">
+            <a href="#home" class="nav-link active">首页</a>
+            <a href="#tools" class="nav-link">工具</a>
+            <a href="#resources" class="nav-link">资源</a>
+            <a href="#about" class="nav-link">关于</a>
+        </nav>
+        <div class="header-actions">
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="admin.html" class="admin-btn">
+                <i class="fas fa-cog"></i>
+                <span>管理后台</span>
+            </a>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <!-- 移动端菜单 -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#home" class="mobile-nav-link">首页</a>
+        <a href="#tools" class="mobile-nav-link">工具</a>
+        <a href="#resources" class="mobile-nav-link">资源</a>
+        <a href="#about" class="mobile-nav-link">关于</a>
+        <a href="admin.html" class="mobile-nav-link admin-mobile-link">
+            <i class="fas fa-cog"></i> 管理后台
+        </a>
+    </div>
+
+    <!-- 主要内容 -->
+    <main class="main-content">
+        <!-- 搜索区域 -->
+        <section class="hero-section" id="home">
+            <h1 class="hero-title">发现优质网站</h1>
+            <p class="hero-subtitle">精心整理的网站导航，助您快速找到所需资源</p>
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索网站、工具或资源...">
+                <button class="search-btn">搜索</button>
+            </div>
+            <div class="quick-tags">
+                <span class="tag">热门</span>
+                <span class="tag">开发工具</span>
+                <span class="tag">设计资源</span>
+                <span class="tag">学习平台</span>
+                <span class="tag">云服务</span>
+            </div>
+        </section>
+
+        <!-- 分类导航 -->
+        <section class="categories-section" id="tools">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-th-large"></i>
+                    常用工具
+                </h2>
+                <a href="#" class="view-all">查看全部 <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="cards-grid">
+                <a href="https://github.com" target="_blank" class="nav-card">
+                    <div class="card-icon github">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>GitHub</h3>
+                        <p>全球最大的代码托管平台</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </a>
+
+                <a href="https://vercel.com" target="_blank" class="nav-card">
+                    <div class="card-icon vercel">
+                        <i class="fas fa-triangle"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Vercel</h3>
+                        <p>前端部署和托管平台</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </a>
+
+                <a href="https://figma.com" target="_blank" class="nav-card">
+                    <div class="card-icon figma">
+                        <i class="fab fa-figma"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Figma</h3>
+                        <p>协作式界面设计工具</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </a>
+
+                <a href="https://codepen.io" target="_blank" class="nav-card">
+                    <div class="card-icon codepen">
+                        <i class="fab fa-codepen"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>CodePen</h3>
+                        <p>前端代码在线编辑器</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </a>
+
+                <a href="https://stackoverflow.com" target="_blank" class="nav-card">
+                    <div class="card-icon stackoverflow">
+                        <i class="fab fa-stack-overflow"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Stack Overflow</h3>
+                        <p>开发者问答社区</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </a>
+
+                <a href="https://caniuse.com" target="_blank" class="nav-card">
+                    <div class="card-icon caniuse">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Can I Use</h3>
+                        <p>浏览器兼容性查询</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 学习资源 -->
+        <section class="categories-section" id="resources">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    学习资源
+                </h2>
+                <a href="#" class="view-all">查看全部 <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="cards-grid">
+                <a href="https://developer.mozilla.org" target="_blank" class="nav-card">
+                    <div class="card-icon mdn">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>MDN Web Docs</h3>
+                        <p>Web 技术权威文档</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </a>
+
+                <a href="https://freecodecamp.org" target="_blank" class="nav-card">
+                    <div class="card-icon freecodecamp">
+                        <i class="fab fa-free-code-camp"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>freeCodeCamp</h3>
+                        <p>免费编程学习平台</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </a>
+
+                <a href="https://css-tricks.com" target="_blank" class="nav-card">
+                    <div class="card-icon csstricks">
+                        <i class="fab fa-css3-alt"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>CSS-Tricks</h3>
+                        <p>CSS 技巧和教程</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </a>
+
+                <a href="https://javascript.info" target="_blank" class="nav-card">
+                    <div class="card-icon javascript">
+                        <i class="fab fa-js"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>JavaScript.info</h3>
+                        <p>现代 JavaScript 教程</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 云服务 -->
+        <section class="categories-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-cloud"></i>
+                    云服务
+                </h2>
+                <a href="#" class="view-all">查看全部 <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="cards-grid">
+                <a href="https://aws.amazon.com" target="_blank" class="nav-card">
+                    <div class="card-icon aws">
+                        <i class="fab fa-aws"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>AWS</h3>
+                        <p>亚马逊云计算服务</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </a>
+
+                <a href="https://cloudflare.com" target="_blank" class="nav-card">
+                    <div class="card-icon cloudflare">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Cloudflare</h3>
+                        <p>CDN 和网络安全服务</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </a>
+
+                <a href="https://supabase.com" target="_blank" class="nav-card">
+                    <div class="card-icon supabase">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Supabase</h3>
+                        <p>开源 Firebase 替代方案</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </a>
+
+                <a href="https://railway.app" target="_blank" class="nav-card">
+                    <div class="card-icon railway">
+                        <i class="fas fa-train"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Railway</h3>
+                        <p>应用部署平台</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-external-link-alt"></i>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer" id="about">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <i class="fas fa-compass"></i>
+                    <span>NavHub</span>
+                </div>
+                <p>简洁高效的网站导航平台</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>导航</h4>
+                    <a href="#home">首页</a>
+                    <a href="#tools">工具</a>
+                    <a href="#resources">资源</a>
+                </div>
+                <div class="footer-column">
+                    <h4>管理</h4>
+                    <a href="admin.html">后台管理</a>
+                    <a href="#">提交网站</a>
+                    <a href="#">意见反馈</a>
+                </div>
+                <div class="footer-column">
+                    <h4>关于</h4>
+                    <a href="#">关于我们</a>
+                    <a href="#">隐私政策</a>
+                    <a href="#">使用条款</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 NavHub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

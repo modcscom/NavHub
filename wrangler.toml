@@ -1,0 +1,19 @@
+name = "navhub"
+main = "workers-site/index.js"
+compatibility_date = "2026-05-31"
+
+[site]
+bucket = "./"
+
+[build]
+command = ""
+
+# 环境变量
+[vars]
+ENVIRONMENT = "production"
+
+# KV 命名空间绑定（用于存储网站数据）
+[[kv_namespaces]]
+binding = "NAVHUB_KV"
+id = "your_kv_namespace_id"
+preview_id = "your_preview_kv_namespace_id"

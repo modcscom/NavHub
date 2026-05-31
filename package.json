@@ -1,0 +1,25 @@
+{
+  "name": "navhub",
+  "version": "1.0.0",
+  "description": "现代化网站导航平台",
+  "main": "index.html",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "echo 'Static site - no build needed'"
+  },
+  "keywords": [
+    "navigation",
+    "website",
+    "cloudflare",
+    "workers"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "dependencies": {
+    "@cloudflare/kv-asset-handler": "^0.3.0"
+  }
+}
